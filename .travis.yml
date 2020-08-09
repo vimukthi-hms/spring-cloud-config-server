@@ -1,0 +1,23 @@
+language: java
+
+services:
+  - docker
+
+jdk:
+  - openjdk14
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -rf $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+
+after_script:
+  - docker build -t test .
+  - docker run -d -p 8888:8888 -e SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/spring-cloud-samples/config-repo test"
+  - docker ps -a
+  - "curl localhost:8888/foo/development | jq '.propertySources[0]' |
+      jq 'contains({name: \"https://github.com/spring-cloud-samples/config-repo/foo-development.properties\"})'"
