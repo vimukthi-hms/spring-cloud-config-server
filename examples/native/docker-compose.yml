@@ -1,6 +1,6 @@
 version: '2'
 
-# Docker Compose example for testing a remote git repo
+# Docker Compose example for testing a native file system
 
 services:
   # Configured through environment variables
@@ -10,9 +10,11 @@ services:
     ports:
       - "8881:8888"
     environment:
-      SPRING_CLOUD_CONFIG_SERVER_GIT_URI: https://github.com/spring-cloud-samples/config-repo
+      SPRING_PROFILES_ACTIVE: native
+    volumes:
+      - ./config:/config
 
-  # Configured through mount config volume
+  # Configured through mount config file
   config-server-dir:
     container_name: config-server-dir
     image: hyness/spring-cloud-config-server
@@ -20,6 +22,7 @@ services:
       - "8882:8888"
     volumes:
       - ./config:/config
+      - ./application.yml:/opt/spring-cloud-config-server/application.yml
 
   # Configured through system properties
   config-server-props:
@@ -28,4 +31,6 @@ services:
     ports:
       - "8883:8888"
     environment:
-      JAVA_OPTS: -Dspring.cloud.config.server.git.uri=https://github.com/spring-cloud-samples/config-repo
+      JAVA_OPTS: -Dspring.profiles.active=native
+    volumes:
+      - ./config:/config
