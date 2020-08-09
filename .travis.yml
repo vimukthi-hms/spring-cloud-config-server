@@ -29,14 +29,18 @@ jobs:
         - docker pull docker.pkg.github.com/hyness/spring-cloud-config-server/test
         - docker tag docker.pkg.github.com/hyness/spring-cloud-config-server/test hyness/spring-cloud-config-server
         - docker-compose -f examples/git/docker-compose.yml up -d config-server-env
-        - timeout 30 sh -c "until curl -o /dev/null -Isf localhost:8888/foo/development; do printf '.' && sleep 1; done"
-        - "curl localhost:8888/foo/development | jq '.propertySources[0]' |
+        - timeout 30 sh -c "until curl -o /dev/null -Isf localhost:8881/foo/development; do printf '.' && sleep 1; done"
+        - "curl localhost:8881/foo/development | jq '.propertySources[0]' |
+            jq 'contains({name: \"https://github.com/spring-cloud-samples/config-repo/foo-development.properties\"})'"
+        - "curl localhost:8882/foo/development | jq '.propertySources[0]' |
+            jq 'contains({name: \"https://github.com/spring-cloud-samples/config-repo/foo-development.properties\"})'"
+        - "curl localhost:8883/foo/development | jq '.propertySources[0]' |
             jq 'contains({name: \"https://github.com/spring-cloud-samples/config-repo/foo-development.properties\"})'"
     - script:
         - docker pull docker.pkg.github.com/hyness/spring-cloud-config-server/test
         - docker tag docker.pkg.github.com/hyness/spring-cloud-config-server/test hyness/spring-cloud-config-server
         - docker-compose -f examples/native/docker-compose.yml up -d config-server-dir
-        - timeout 30 sh -c "until curl -o /dev/null -Isf localhost:8888/foo/development; do printf '.' && sleep 1; done"
+        - timeout 30 sh -c "until curl -o /dev/null -Isf localhost:8881/foo/development; do printf '.' && sleep 1; done"
         - "curl localhost:8881/foo/development | jq '.propertySources[0]' |
             jq 'contains({name: \"https://github.com/spring-cloud-samples/config-repo/foo-development.properties\"})'"
         - "curl localhost:8882/foo/development | jq '.propertySources[0]' |
