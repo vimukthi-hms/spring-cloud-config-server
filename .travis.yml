@@ -1,20 +1,19 @@
-dist: trusty
-language: java
-
+#language: java
+#
 services:
   - docker
-
-jdk:
-  - openjdk14
-
-before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -rf $HOME/.gradle/caches/*/plugin-resolution/
-
-cache:
-  directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
+#
+#jdk:
+#  - openjdk14
+#
+#before_cache:
+#  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+#  - rm -rf $HOME/.gradle/caches/*/plugin-resolution/
+#
+#cache:
+#  directories:
+#    - $HOME/.gradle/caches/
+#    - $HOME/.gradle/wrapper/
 
 #after_script:
 #  - docker build -t test .
@@ -30,19 +29,19 @@ cache:
 
 jobs:
   include:
+    - before_script:
+        - echo "$DOCKER_PASSWORD" | docker login https://docker.pkg.github.com -u "$DOCKER_USERNAME" --password-stdin
     - stage: build docker image
       script:
-      - echo "$DOCKER_PASSWORD" | docker login https://docker.pkg.github.com -u "$DOCKER_USERNAME" --password-stdin
       - docker build -t docker.pkg.github.com/hyness/spring-cloud-config-server/test .
       - docker push docker.pkg.github.com/hyness/spring-cloud-config-server/test
     - stage: test
       script:
-      - docker build -t test .
       - echo "Starting config server"
       - docker run -d -p 8888:8888 -e SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/spring-cloud-samples/config-repo docker.pkg.github.com/hyness/spring-cloud-config-server/test
       - docker ps -a
       - echo "Wait for server to start"
-      - timeout 30 sh -c "until curl --output /dev/null --silent --head --fail localhost:8888/foo/development; do printf '.' && sleep 1; done"
+      - timeout 30 sh -c "until curl -o /dev/null -Isf localhost:8888/foo/development; do printf '.' && sleep 1; done"
       - echo "Verifying config server"
       - curl localhost:8888/foo/development | jq
       - "curl localhost:8888/foo/development | jq '.propertySources[0]' |
