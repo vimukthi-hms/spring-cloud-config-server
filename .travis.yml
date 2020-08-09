@@ -25,8 +25,10 @@ jobs:
     - stage: test
       script:
         - echo "$DOCKER_PASSWORD" | docker login https://docker.pkg.github.com -u "$DOCKER_USERNAME" --password-stdin
+        - docker pull docker.pkg.github.com/hyness/spring-cloud-config-server/test
+        - docker tag docker.pkg.github.com/hyness/spring-cloud-config-server/test hyness/spring-cloud-config-server
         - echo "Starting config server"
-        - docker run -d -p 8888:8888 -e SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/spring-cloud-samples/config-repo docker.pkg.github.com/hyness/spring-cloud-config-server/test
+        - docker run -d -p 8888:8888 -e SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/spring-cloud-samples/config-repo hyness/spring-cloud-config-server
         - docker ps -a
         - echo "Wait for server to start"
         - timeout 30 sh -c "until curl -o /dev/null -Isf localhost:8888/foo/development; do printf '.' && sleep 1; done"
