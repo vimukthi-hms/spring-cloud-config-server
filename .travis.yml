@@ -18,7 +18,7 @@ cache:
 after_script:
   - docker build -t test .
   - echo "Starting config server"
-  - docker run -d -p 8888:8888 -e SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/spring-cloud-samples/config-repo test"
+  - docker run -d -p 8888:8888 -e SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/spring-cloud-samples/config-repo test
   - docker ps -a
   - echo "Verifying config server"
   - curl localhost:8888/foo/development | jq
