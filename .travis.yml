@@ -15,16 +15,17 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
+before_script:
+  - echo "$DOCKER_PASSWORD" | docker login https://docker.pkg.github.com -u "$DOCKER_USERNAME" --password-stdin
+
 jobs:
   include:
     - stage: build docker image
       script:
-        - echo "$DOCKER_PASSWORD" | docker login https://docker.pkg.github.com -u "$DOCKER_USERNAME" --password-stdin
         - docker build -t docker.pkg.github.com/hyness/spring-cloud-config-server/test .
         - docker push docker.pkg.github.com/hyness/spring-cloud-config-server/test
     - stage: test
       script:
-        - echo "$DOCKER_PASSWORD" | docker login https://docker.pkg.github.com -u "$DOCKER_USERNAME" --password-stdin
         - docker pull docker.pkg.github.com/hyness/spring-cloud-config-server/test
         - docker tag docker.pkg.github.com/hyness/spring-cloud-config-server/test hyness/spring-cloud-config-server
         - echo "Starting config server"
