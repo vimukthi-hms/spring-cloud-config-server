@@ -16,7 +16,6 @@ cache:
     - $HOME/.gradle/wrapper/
 
 after_script:
-  - echo "Building config server docker image"
   - docker build -t test .
   - echo "Starting config server"
   - docker run -d -p 8888:8888 -e SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/spring-cloud-samples/config-repo test"
