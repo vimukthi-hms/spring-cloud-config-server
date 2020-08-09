@@ -1,19 +1,19 @@
-#language: java
+language: java
 #
 services:
   - docker
-#
-#jdk:
-#  - openjdk14
-#
-#before_cache:
-#  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-#  - rm -rf $HOME/.gradle/caches/*/plugin-resolution/
-#
-#cache:
-#  directories:
-#    - $HOME/.gradle/caches/
-#    - $HOME/.gradle/wrapper/
+
+jdk:
+  - openjdk14
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -rf $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
 
 #after_script:
 #  - docker build -t test .
