@@ -20,8 +20,9 @@ after_script:
   - echo "Starting config server"
   - docker run -d -p 8888:8888 -e SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/spring-cloud-samples/config-repo test
   - docker ps -a
+  - echo "Wait for server to start"
+  - timeout 5 sh -c "until curl --output /dev/null --silent --head --fail localhost:8888/foo/development; do printf '.' && sleep 1; done"
   - echo "Verifying config server"
   - curl localhost:8888/foo/development | jq
   - "curl localhost:8888/foo/development | jq '.propertySources[0]' |
       jq 'contains({name: \"this should fail\"})'"
-until $(curl --output /dev/null --silent --head --fail http://myhost:myport); do; printf '.' && sleep 5; done
