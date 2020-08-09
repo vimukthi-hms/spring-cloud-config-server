@@ -18,7 +18,7 @@ cache:
 jobs:
   include:
     - stage: build docker image
-      scriptk:
+      script:
         - echo "$DOCKER_PASSWORD" | docker login https://docker.pkg.github.com -u "$DOCKER_USERNAME" --password-stdin
         - docker build -t docker.pkg.github.com/hyness/spring-cloud-config-server/test .
         - docker push docker.pkg.github.com/hyness/spring-cloud-config-server/test
