@@ -13,3 +13,15 @@ spring:
   config:
     activate:
       on-profile: cloud-bus-kafka
+---
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          clone-on-start: true
+          basedir: /config-git-base
+          default-label: master
+  config:
+    activate:
+      on-profile: git
